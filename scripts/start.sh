@@ -3,7 +3,7 @@
 # Disable Strict Host checking for non interactive git clones
 
 mkdir -p -m 0700 /root/.ssh
-# Prevent config files from being filled to infinity by force of stop and restart the container 
+# Prevent config files from being filled to infinity by force of stop and restart the container
 echo "" > /root/.ssh/config
 echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
@@ -199,6 +199,12 @@ else
   fi
 fi
 
+
+ # If APP Params set, add them to the instance.config.php
+ if [ ! -z "$APP_DB_HOST" ]; then
+   echo -e "<?php \n\$DB_SETTINGS['docker'] = array(\n'db_host' => '${APP_DB_HOST}',\n'db_name' => '${APP_DB_NAME}',\n'db_uname' => '${APP_DB_USER}',\n'db_password' => '${APP_DB_PASS}'\n);\n\$DB_CONFIG = 'docker';\n" > /var/www/html/instance.config.php;
+fi
+
 # Run custom scripts
 if [[ "$RUN_SCRIPTS" == "1" ]] ; then
   if [ -d "/var/www/html/scripts/" ]; then
@@ -226,4 +232,3 @@ fi
 
 # Start supervisord and services
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf
-
