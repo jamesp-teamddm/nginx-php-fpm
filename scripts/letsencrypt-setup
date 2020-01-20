@@ -8,9 +8,10 @@ else
  ln -s /etc/nginx/sites-available/default-ssl.conf /etc/nginx/sites-enabled/
 
  # change nginx for webroot and domain name
+ sed -i "s#server_name _;#server_name ${DOMAIN};#g" /etc/nginx/sites-enabled/default-ssl.conf
  sed -i "s/##DOMAIN##/${DOMAIN}/g" /etc/nginx/sites-enabled/default-ssl.conf
  sed -i "s#root /var/www/html;#root ${WEBROOT};#g" /etc/nginx/sites-available/default-ssl.conf
 
  supervisorctl restart nginx
- 
+
 fi
