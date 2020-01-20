@@ -222,10 +222,16 @@ if [[ "$RUN_SCRIPTS" == "1" ]] ; then
   fi
 fi
 
-if [ -z "$SKIP_NPM_INSTALL" ] && [ -d "/var/www/html/src" ] && [ -f "/var/www/html/src/package.json" ]; then
-  # @todo remove broken package lock file for now
-  rm /var/www/html/src/package-lock.json;
-  npm --prefix /var/www/html/src install;
+if [ -z "$SKIP_NPM_INSTALL" ]; then
+  if [ -f "/var/www/html/Grunt/package.json" ]; then
+    NPM_INSTALL_PREFIX="/var/www/html/Grunt";
+  elif [ -f "/var/www/html/src/package.json" ]; then
+    NPM_INSTALL_PREFIX="/var/www/html/src";
+  fi
+
+  if [ -d "$NPM_INSTALL_PREFIX" ]; then
+    npm --prefix $NPM_INSTALL_PREFIX install;
+  fi
 fi
 
 if [ -z "$SKIP_COMPOSER" ]; then
