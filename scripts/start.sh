@@ -18,7 +18,7 @@ if [ ! -z "$SSH_KEY" ]; then
 fi
 
 # Set default domain for Kern $SITE compat
-if [ !-z "$DOMAIN" ]; then
+if [ ! -z "$DOMAIN" ]; then
   sed -i "s#server_name _;#server_name ${DOMAIN};#g" /etc/nginx/sites-available/default.conf
 fi
 
