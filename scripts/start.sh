@@ -222,6 +222,12 @@ if [[ "$RUN_SCRIPTS" == "1" ]] ; then
   fi
 fi
 
+if [ -z "$SKIP_NPM_INSTALL" ] && [ -d "/var/www/html/src" ] && [ -f "/var/www/html/src/package.json" ]; then
+  # @todo remove broken package lock file for now
+  rm /var/www/html/src/package-lock.json;
+  npm --prefix /var/www/html/src install;
+fi
+
 if [ -z "$SKIP_COMPOSER" ]; then
     # Try auto install for composer
     if [ -f "/var/www/html/composer.lock" ]; then
