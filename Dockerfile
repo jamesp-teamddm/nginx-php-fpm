@@ -5,7 +5,7 @@ LABEL maintainer="Ric Harvey <ric@ngd.io>"
 ENV php_conf /usr/local/etc/php-fpm.conf
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
-
+ENV CMS_ENV docker-dev
 ENV NGINX_VERSION 1.16.1
 ENV DEVEL_KIT_MODULE_VERSION 0.3.0
 
@@ -200,7 +200,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
     rm composer-setup.php && \
-    npm install -g bower && \
+    # npm install -g bower && \
     npm install -g yarn && \
     pip3 install -U pip && \
     pip3 install -U certbot && \
@@ -227,10 +227,10 @@ RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/defau
 
 # tweak php-fpm config
 RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
-    echo "upload_max_filesize = 100M"  >> ${php_vars} &&\
-    echo "post_max_size = 100M"  >> ${php_vars} &&\
+    echo "upload_max_filesize = 150M"  >> ${php_vars} &&\
+    echo "post_max_size = 152M"  >> ${php_vars} &&\
     echo "variables_order = \"EGPCS\""  >> ${php_vars} && \
-    echo "memory_limit = 128M"  >> ${php_vars} && \
+    echo "memory_limit = 512M"  >> ${php_vars} && \
     sed -i \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
         -e "s/pm.max_children = 5/pm.max_children = 4/g" \
@@ -245,7 +245,8 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/;listen.group = www-data/listen.group = nginx/g" \
         -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
-        ${fpm_conf}
+        ${fpm_conf} && \
+    CMS_ENV=$CMS_ENV && echo "env[CMS_ENV] = ${CMS_ENV}" >> ${fpm_conf}
 #    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
 #    find /etc/php7/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
