@@ -222,15 +222,20 @@ if [[ "$RUN_SCRIPTS" == "1" ]] ; then
   fi
 fi
 
-if [ -z "$SKIP_NPM_INSTALL" ]; then
-  if [ -f "/var/www/html/Grunt/package.json" ]; then
-    NPM_INSTALL_PREFIX="/var/www/html/Grunt";
+if [ -z "$SKIP_PACKAGES_INSTALL" ]; then
+  if [ -f "/var/www/html/Grunt/commands/build.sh" ]; then
+      # make all scripts in this folder executable in case they aren't
+      chmod -Rf 750 /var/www/html/Grunt/commands/*; sync;
+      # save cwd
+      START_CWD=$(pwd);
+      # cd into ./Grunt and do npm install to install local grunt
+      cd /var/www/html/Grunt && yarn install
+      # cd into build directory which uses relative paths to other scripts
+      cd /var/www/html/Grunt/commands && ./build.sh;
+      # return to previous cwd
+      cd $START_CWD;
   elif [ -f "/var/www/html/src/package.json" ]; then
-    NPM_INSTALL_PREFIX="/var/www/html/src";
-  fi
-
-  if [ -d "$NPM_INSTALL_PREFIX" ]; then
-    npm --prefix $NPM_INSTALL_PREFIX install;
+      yarn --cwd /var/www/html/src install;
   fi
 fi
 

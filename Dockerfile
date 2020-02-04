@@ -200,7 +200,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
     rm composer-setup.php && \
-    # npm install -g bower && \
+    npm install -g grunt-cli && \
     npm install -g yarn && \
     pip3 install -U pip && \
     pip3 install -U certbot && \
