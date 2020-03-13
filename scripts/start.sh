@@ -252,5 +252,23 @@ if [ -z "$SKIP_COMPOSER" ]; then
     fi
 fi
 
+# Run custom scripts
+if [[ "$RUN_PHP_UNIT_TESTS" == "1" ]] ; then
+  if [ -d "/var/www/html/tests/" ]; then
+      # Install PHPUnit Composer package
+      cd /var/www/html && composer require phpunit/phpunit && composer update;
+
+      # Default path is vendor/bin/ but Kern uses bin/
+      if [ -f "/var/www/html/bin/phpunit" ]; then
+          PHP_UNIT_BIN="/var/www/html/bin/phpunit";
+      else
+          PHP_UNIT_BIN="/var/www/html/vendor/bin/phpunit";
+      fi
+      cd /var/www/html && ${PHP_UNIT_BIN} --bootstrap vendor/autoload.php tests/
+  else
+      echo "Can't find tests directory"
+  fi
+fi
+
 # Start supervisord and services
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf
