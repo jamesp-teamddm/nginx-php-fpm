@@ -24,19 +24,19 @@ RUN apk add --no-cache --virtual .build-deps \
 
 # compile openssl, otherwise --with-openssl won't work
 RUN set -xe \
-	&& OPENSSL_VERSION="1.0.2k" \
-	&& cd /tmp \
-	&& mkdir openssl \
-	&& curl -sL "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz" -o openssl.tar.gz \
-	&& curl -sL "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz.asc" -o openssl.tar.gz.asc \
-	&& tar -xzf openssl.tar.gz -C openssl --strip-components=1 \
-	&& cd /tmp/openssl \
-	&& ./config \
-	&& make depend \
-	&& make -j"$(nproc)" \
-	&& make install \
-	&& rm -rf /tmp/* \
-  && ln -s /usr/local/bin/ssl/bin/openssl /usr/local/bin/openssl
+  	&& OPENSSL_VERSION="1.0.2k" \
+  	&& cd /tmp \
+  	&& mkdir openssl \
+  	&& curl -sL "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz" -o openssl.tar.gz \
+  	&& curl -sL "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz.asc" -o openssl.tar.gz.asc \
+  	&& tar -xzf openssl.tar.gz -C openssl --strip-components=1 \
+  	&& cd /tmp/openssl \
+  	&& ./config \
+  	&& make depend \
+  	&& make -j"$(nproc)" \
+  	&& make install \
+  	&& rm -rf /tmp/* \
+    && ln -s /usr/local/bin/ssl/bin/openssl /usr/local/bin/openssl
 
 # Install PHP
 RUN mkdir -p $php_ini_dir/conf.d
