@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.11
 
 ENV php_conf /usr/local/etc/php-fpm.conf
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
